@@ -1,4 +1,5 @@
 import nltk
+import re
 
 
 def naive_name_detector(text):
@@ -70,3 +71,24 @@ def naive_name_detector(text):
             current_name = []
 
     return completed_names
+
+
+def adjective_detector(text):
+    tokenizer = nltk.RegexpTokenizer(r'\w+')
+
+    # use tokenizer to break the text into tokens
+    tokens = tokenizer.tokenize(text)
+
+    # use 'part-of-speech' tagging to determine meaning of each token
+    tagged_tokens = nltk.pos_tag(tokens)
+
+    ADJECTIVE="JJ"
+    adjectives_list = []
+
+    for tagged_token in tagged_tokens:
+        tag = tagged_token[1]
+        token = tagged_token[0]
+        if re.match(ADJECTIVE, tag):
+            adjectives_list.append(token)
+
+    return adjectives_list
