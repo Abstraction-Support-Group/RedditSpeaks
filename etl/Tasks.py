@@ -5,7 +5,7 @@ This module provides methods to perform extract names from Reddit submissions.
 from functools import reduce
 import json
 
-from etl.Heuristics import naive_name_detector
+from etl.Heuristics import naive_name_detector, adjective_detector
 
 
 def perform_name_extraction(submissions, output_path):
@@ -65,7 +65,7 @@ def perform_name_extraction(submissions, output_path):
     ready_to_be_grouped = [prepare_for_grouping(submission)
                            for submission in sorted_submissions]
 
-    ready_to_be_grouped[0] = list(ready_to_be_grouped[0])
+    ready_to_be_grouped[0] = [ready_to_be_grouped[0]]
 
     grouped = reduce(group, ready_to_be_grouped)
 
@@ -90,8 +90,8 @@ def extract_names(submission):
 
 
 def prepare_for_grouping(submission):
-    return dict(titles=list(submission['title']),
-                ids=list(submission['id']),
+    return dict(titles=[submission['title']],
+                ids=[submission['id']],
                 name=submission['name'])
 
 
@@ -119,3 +119,18 @@ def does_not_have_short_names(submission):
 
 def has_name(submission):
     return len(submission['names']) != 0
+
+
+def perform_adjective_extraction(submissions):
+    return map(extract_adjective, submissions)
+
+
+def extract_adjective(submission):
+    adjectives = []
+
+    for title in submission['titles']:
+        adjective_list = adjective_detector(title)
+        adjectives.extend(adjective_list)
+
+    submission['adjectives'] = adjectives
+    return submission
