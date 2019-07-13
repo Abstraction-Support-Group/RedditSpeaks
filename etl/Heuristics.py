@@ -70,3 +70,31 @@ def naive_name_detector(text):
             current_name = []
 
     return completed_names
+
+
+def action_phrase_detector(text, name):
+    tokenizer = nltk.RegexpTokenizer(r'\w+')
+
+    # use tokenizer to break the text into tokens
+    text = text.lower()
+    tokens = tokenizer.tokenize(text)
+
+    # use 'part-of-speech' tagging to determine meaning of each token
+    tagged_tokens = nltk.pos_tag(tokens)
+
+    for index, tagged_token in enumerate(tagged_tokens):
+        if tagged_token[0] in name:
+            tagged_tokens[index] = (tagged_token[0], "NAME")
+
+    grammar = "phrase: {<NAME>+<V.*><.*>{0,4}<NN.*>}"
+
+    cp = nltk.RegexpParser(grammar)
+
+    phrases = []
+
+    result = cp.parse(tagged_tokens)
+    for subtree in result.subtrees():
+        if subtree.label() == "phrase":
+            phrases.append(subtree.flatten())
+
+    return phrases
