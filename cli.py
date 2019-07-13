@@ -44,7 +44,7 @@ def extract_names(context):
 def extract_action_phrases(context):
     input_path = context.input
     output_path = context.output
-    
+
     with open(input_path) as infile:
         data = json.load(infile)
 
@@ -111,4 +111,3 @@ if __name__ == "__main__":
     context = parser.parse_args()
     # Run the handler function associated with the user's chosen command
     context.handler(context)
-
