@@ -1,3 +1,5 @@
+from functools import reduce
+
 import nltk
 
 
@@ -95,6 +97,11 @@ def action_phrase_detector(text, name):
     result = cp.parse(tagged_tokens)
     for subtree in result.subtrees():
         if subtree.label() == "phrase":
-            phrases.append(subtree.flatten())
+            phrase = reduce(lambda string_so_far, token2: " ".join([string_so_far, token2[0]]), subtree.flatten(), "")
+            phrases.append(phrase)
 
+    if phrases:
+        print(name)
+        print(text)
+        print(phrases)
     return phrases
