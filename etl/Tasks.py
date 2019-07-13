@@ -120,6 +120,7 @@ def does_not_have_short_names(submission):
 def has_name(submission):
     return len(submission['names']) != 0
 
+
 def perform_action_phrase_extraction(submissions):
     return map(extract_action_phrases, submissions)
 
