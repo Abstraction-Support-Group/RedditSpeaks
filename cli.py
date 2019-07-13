@@ -18,6 +18,7 @@ python cli.py names --input <path to input file> --output <path to output file>
 """
 
 import argparse
+import json
 
 from etl import Client, Tasks
 
@@ -38,6 +39,19 @@ def extract_names(context):
 
     data_generator = Client.read(input_path)
     Tasks.perform_name_extraction(data_generator, output_path)
+
+
+def extract_action_phrases(context):
+    input_path = context.input
+    output_path = context.output
+    
+    with open(input_path) as infile:
+        data = json.load(infile)
+
+    data_generator = iter(data)
+
+    extracted = Tasks.perform_action_phrase_extraction(data_generator)
+    Client.write(extracted, output_path)
 
 
 if __name__ == "__main__":
